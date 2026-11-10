@@ -1,0 +1,7 @@
+# Skill 4 回测引擎：100% 纯离线，仅依赖 Python 3.9+ 标准库
+# （csv/json/statistics/math/argparse），零第三方依赖、零网络请求。
+#
+# 可选增强（自行绘图 / 扩展指标时使用，脚本本身不 import）：
+# pandas>=2.0.0
+# numpy>=1.24.0
+# matplotlib>=3.7.0

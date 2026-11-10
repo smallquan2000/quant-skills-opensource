@@ -1,0 +1,4 @@
+﻿rank,code,name,date,score,f_price_position,f_stock_momentum,f_cb_stock_gap,f_volume_ratio,f_premium_rate,price,cb_change_pct,stock_change_pct,cb_stock_gap,volume_ratio,premium_rate,amount
+1,123151,锦鸡转债,2026-11-10,85.50,0.35,0.90,1.00,1.00,0.85,149.80,3.40,7.50,4.10,3.20,9.80,521000000
+2,128136,立昂转债,2026-11-10,78.75,0.35,0.90,1.00,0.85,0.60,141.20,2.10,6.10,4.00,2.80,18.70,412000000
+3,113050,南银转债,2026-11-10,77.50,0.60,0.70,0.85,0.85,0.85,128.60,1.20,4.80,3.60,2.10,8.50,385000000

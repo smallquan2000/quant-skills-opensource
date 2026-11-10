@@ -1,0 +1,10 @@
+# 全项目可选依赖聚合。4 个 Skill 各自也有独立的 requirements.txt 可单独安装。
+#
+# 方案 B：云沙箱内嵌调度服务 scripts/embedded_scheduler.py 需要
+flask>=3.0.0
+#
+# Skill 1 的 eastmoney 在线数据源 / Skill 3 的 webhook 通知需要
+requests>=2.31.0
+#
+# Skill 2 / 3 / 4 的核心逻辑仅依赖 Python 3.9+ 标准库，无需额外安装。
+# 用 `python3 -m pip install -r requirements.txt` 一次装齐即可。

@@ -1,0 +1,6 @@
+# Skill 2 打分引擎：核心逻辑仅依赖 Python 3.9+ 标准库（csv/json/argparse），
+# 无强制第三方依赖，便于豆包 / Claude 等环境离线模拟与复现。
+#
+# 可选增强（安装后可自行扩展批量 IO / 可视化，脚本本身不 import）：
+# pandas>=2.0.0
+# numpy>=1.24.0

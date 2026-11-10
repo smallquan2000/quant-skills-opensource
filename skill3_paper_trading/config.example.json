@@ -1,0 +1,54 @@
+{
+  "_comment": "复制为 config.json；所有路径相对本 Skill 根目录。真实密钥一律走 .env / 环境变量，禁止写在本文件。",
+  "input": {
+    "signals_csv": "../skill2_scoring_engine/data/scored_signals.csv",
+    "fallback_signals_csv": "data/sample_signals.csv",
+    "review_prices_csv": "data/sample_review_prices.csv",
+    "_note": "review_prices_csv 提供当前价用于止盈止损判定；实盘可替换为实时行情导出"
+  },
+  "account": {
+    "initial_capital": 50000.0,
+    "position_pct": 0.20,
+    "max_positions": 3,
+    "lot_size": 10,
+    "commission_rate": 0.0003,
+    "currency": "CNY"
+  },
+  "exit_rules": {
+    "take_profit_pct": 10.1,
+    "stop_loss_pct": -5.0,
+    "trailing_stop_pct": 3.0,
+    "t0_close_at_eod": true,
+    "_note": "t0_close_at_eod=true 表示 T+0 当日尾盘无条件平仓；false 则持有至触发止盈/止损",
+    "max_hold_days": 1
+  },
+  "notify": {
+    "enabled": true,
+    "instant_trigger": true,
+    "_instant_note": "true=信号/成交产生即发送（不等定时汇总），源自沙箱休眠导致定时汇总丢失的踩坑经验",
+    "channel": "stdout",
+    "_channel_note": "stdout | smtp | webhook；未配置密钥时自动降级为 dry-run 打印，不会报错",
+    "to": "${NOTIFY_TO:-you@example.com}",
+    "subject_prefix": "[CB-T0 模拟盘]",
+    "smtp": {
+      "host": "${SMTP_HOST:-smtp.qq.com}",
+      "port": "${SMTP_PORT:-465}",
+      "use_ssl": true,
+      "user": "${SMTP_USER:-}",
+      "password": "${SMTP_PASSWORD:-}",
+      "timeout": 10
+    },
+    "webhook_url": "${WEBHOOK_URL:-}"
+  },
+  "paths": {
+    "account_state": "data/paper_account.json",
+    "trade_log": "data/trade_log.csv",
+    "review_dir": "data/reviews"
+  },
+  "schedule": {
+    "_note": "供 crontab / 调度器参考，本 Skill 自身不常驻；时间节点可按平台调整",
+    "select_bond": ["10:00", "13:30"],
+    "confirm": "14:40",
+    "review": "15:30"
+  }
+}

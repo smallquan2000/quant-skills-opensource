@@ -1,0 +1,6 @@
+# Skill 1 数据管道依赖
+# 仅 eastmoney provider 需要 HTTP 客户端；csv / westock(CSV 契约) 通道零依赖。
+requests>=2.31.0
+
+# 可选增强（非必须，脚本不强依赖）：
+# pandas>=2.0.0

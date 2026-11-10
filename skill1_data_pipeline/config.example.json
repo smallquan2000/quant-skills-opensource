@@ -1,0 +1,40 @@
+{
+  "_comment": "复制为 config.json 后修改；所有路径相对本 Skill 根目录，禁止写绝对路径。${VAR:-default} 会从 .env / 环境变量展开。",
+  "date": "${RUN_DATE:-}",
+  "data_source": {
+    "provider": "csv",
+    "_provider_note": "csv | eastmoney；westock 请由 AI 侧取数后按 CSV 契约落盘再用 csv 入库",
+    "timeout": 10,
+    "user_agent": "quant-skills/1.0",
+    "csv_path": "data/cb_sample.csv",
+    "eastmoney": {
+      "base_url": "https://push2delay.eastmoney.com/api/qt/clist/get",
+      "board": "b:MK0354",
+      "page_size": 500,
+      "fields": "f2,f3,f6,f10,f12,f14,f18"
+    }
+  },
+  "universe": {
+    "mode": "all",
+    "_mode_note": "all=全市场 | include=仅白名单 | exclude=黑名单剔除；也可用 --universe 命令行覆盖",
+    "codes": []
+  },
+  "paths": {
+    "db": "data/cb_market.db",
+    "export_csv": "data/cb_snapshot.csv"
+  },
+  "calendar": {
+    "skip_non_trading_day": true,
+    "max_lookback": 15,
+    "_holidays_note": "示例值，请按当年交易所公告维护；留空则仅跳过周末",
+    "holidays": ["2026-01-01", "2026-10-01", "2026-10-02", "2026-10-05"]
+  },
+  "fallbacks": {
+    "_note": "上游接口未提供的字段按此回填，避免脏数据污染打分；正式使用请接正股/溢价率数据源",
+    "stock_change_pct": 0.0,
+    "premium_rate": 0.0,
+    "cb_stock_gap": 0.0,
+    "volume_ratio": 1.0,
+    "amount": 0.0
+  }
+}

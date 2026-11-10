@@ -1,0 +1,21 @@
+{
+  "_comment": "复制为 config.json；所有路径相对本 Skill 根目录。跨 Skill 引用可用 ../skill1_data_pipeline/... 形式。",
+  "weights_file": "weights.json",
+  "input": {
+    "source": "csv",
+    "_source_note": "csv | sqlite",
+    "csv_path": "../skill1_data_pipeline/data/cb_snapshot.csv",
+    "fallback_csv": "data/sample_signals.csv",
+    "_fallback_note": "主输入不存在时自动回落，保证单独 clone 本 Skill 也能跑通",
+    "sqlite_path": "../skill1_data_pipeline/data/cb_market.db",
+    "table": "cb_snapshot",
+    "date": "${RUN_DATE:-}",
+    "_date_note": "留空则取数据中最大日期"
+  },
+  "output": {
+    "csv": "data/scored_signals.csv",
+    "json": "data/scored_signals.json"
+  },
+  "top_n_override": null,
+  "_top_n_override_note": "填整数可覆盖 weights.json 的 top_n；null 表示沿用权重文件"
+}

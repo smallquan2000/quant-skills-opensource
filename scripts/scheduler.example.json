@@ -1,0 +1,79 @@
+{
+  "_comment": "复制为 scripts/scheduler.json 后修改（该真实配置已被 .gitignore 排除）。所有路径相对仓库根目录；${VAR:-default} 从环境变量展开。",
+  "host": "${SCHEDULER_HOST:-0.0.0.0}",
+  "port": "${SCHEDULER_PORT:-8080}",
+  "timezone": "${SCHEDULER_TZ:-Asia/Shanghai}",
+  "_timezone_note": "A 股用 Asia/Shanghai；避免复用系统 TZ 变量以免被平台覆盖",
+
+  "wakeup_token": "${WAKEUP_TOKEN:-}",
+  "_token_note": "留空则 /wakeup 不鉴权（仅适合内网）；公网部署务必在环境变量设置随机 token，切勿写入本文件",
+
+  "python_bin": "",
+  "_python_note": "留空 = 自动使用 sys.executable（强烈推荐，根治 crontab 命中系统裸 Python 的踩坑）；确有需要才填解释器绝对路径",
+
+  "tick_interval_seconds": 60,
+  "_tick_note": "进程内 threading.Timer 的检查周期；外部 /wakeup 是独立触发源，二者都调用同一个 tick()",
+  "task_timeout_seconds": 300,
+  "catch_up_days": 0,
+  "_catch_up_note": "0=只补当天任务（推荐）；设 1 则在唤醒时额外补最近 1 个自然日中已到点的任务。不会一次性补跑整段历史，避免过期信号",
+  "state_retention_days": 7,
+
+  "paths": {
+    "state": "data/scheduler_state.json",
+    "log": "data/scheduler.log"
+  },
+  "calendar": {
+    "_note": "示例值，请按当年交易所公告维护；周末自动跳过",
+    "holidays": ["2026-01-01", "2026-10-01", "2026-10-02", "2026-10-05"]
+  },
+  "tasks": [
+    {
+      "id": "data_pipeline",
+      "time": "08:00",
+      "label": "采集 / 选股",
+      "steps": [
+        {"skill": "skill1_data_pipeline", "script": "scripts/fetch_cb_data.py",
+         "args": ["--provider", "csv", "--export-csv", "data/cb_snapshot.csv"]}
+      ]
+    },
+    {
+      "id": "select_bond_am",
+      "time": "10:00",
+      "label": "上午场选债 + 打分",
+      "steps": [
+        {"skill": "skill1_data_pipeline", "script": "scripts/fetch_cb_data.py",
+         "args": ["--provider", "csv", "--export-csv", "data/cb_snapshot.csv"]},
+        {"skill": "skill2_scoring_engine", "script": "scripts/score.py", "args": []}
+      ]
+    },
+    {
+      "id": "select_bond_pm",
+      "time": "13:30",
+      "label": "下午场选债 + 打分",
+      "steps": [
+        {"skill": "skill1_data_pipeline", "script": "scripts/fetch_cb_data.py",
+         "args": ["--provider", "csv", "--export-csv", "data/cb_snapshot.csv"]},
+        {"skill": "skill2_scoring_engine", "script": "scripts/score.py", "args": []}
+      ]
+    },
+    {
+      "id": "confirm",
+      "time": "14:40",
+      "label": "尾盘确认 / 建仓",
+      "steps": [
+        {"skill": "skill3_paper_trading", "script": "scripts/paper_engine.py",
+         "args": ["--mode", "buy"]}
+      ]
+    },
+    {
+      "id": "review",
+      "time": "15:30",
+      "label": "盘后复盘",
+      "steps": [
+        {"skill": "skill3_paper_trading", "script": "scripts/paper_engine.py",
+         "args": ["--mode", "review"]}
+      ]
+    }
+  ],
+  "_tasks_note": "每个任务可含多个 steps，按顺序执行；id 是幂等键的一部分，改名会让当天任务重新执行一次"
+}

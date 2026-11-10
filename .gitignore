@@ -1,0 +1,45 @@
+# ===== 真实配置与密钥：绝不提交 =====
+config.json
+scheduler.json
+.env
+*.env
+!*.env.example
+!config.example.json
+!scheduler.example.json
+secrets/
+*.pem
+*.key
+
+# ===== 运行时产物（示例数据 sample_*.csv 需保留）=====
+*.db
+*.sqlite
+*.sqlite3
+**/data/cb_snapshot.csv
+**/data/scored_signals.csv
+**/data/scored_signals.json
+**/data/paper_account.json
+**/data/trade_log.csv
+**/data/equity_curve.csv
+**/data/backtest_report.json
+**/data/backtest_report.md
+**/data/reviews/
+**/data/*.log
+**/data/scheduler_state.json
+**/data/scheduler_state.tmp
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+
+# ===== 编辑器 / 系统 =====
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# ===== 本机私有笔记（不开源）=====
+NOTES_PRIVATE.md

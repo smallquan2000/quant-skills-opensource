@@ -1,0 +1,8 @@
+# Skill 3 模拟盘：核心逻辑仅依赖 Python 3.9+ 标准库（smtplib/email/json/csv），
+# 无强制第三方依赖。未配置 SMTP 时自动降级为 stdout dry-run。
+#
+# 仅当 notify.channel = webhook 时需要：
+# requests>=2.31.0
+#
+# 可选增强：
+# pandas>=2.0.0

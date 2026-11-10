@@ -1,0 +1,25 @@
+{
+  "_comment": "复制为 config.json；所有路径相对本 Skill 根目录。本引擎完全离线，不联网、不读实时行情。",
+  "weights_file": "weights.json",
+  "_weights_note": "默认使用本目录副本以保持独立可跑；如需与 Skill 2 共用单一权重源，改为 ../skill2_scoring_engine/weights.json",
+  "input": {
+    "history_csv": "data/sample_history.csv",
+    "date_column": "date",
+    "forward_return_column": "forward_return_pct",
+    "_format_note": "长表：每日每只转债一行，须含 weights.json 中各因子 column 指定的列 + forward_return_pct（单位 %）"
+  },
+  "backtest": {
+    "start_date": "",
+    "end_date": "",
+    "top_n": 3,
+    "weighting": "equal",
+    "commission_rate": 0.0003,
+    "initial_capital": 50000.0,
+    "trading_days_per_year": 242
+  },
+  "output": {
+    "equity_curve_csv": "data/equity_curve.csv",
+    "report_json": "data/backtest_report.json",
+    "report_md": "data/backtest_report.md"
+  }
+}

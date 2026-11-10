@@ -1,0 +1,116 @@
+{
+  "version": "1.0.0",
+  "name": "CB-T0 可转债五维打分模型",
+  "description": "打分权重与阈值全部配置化，代码不写死任何数字。修改本文件即可调参，无需改 Python。",
+  "scale": {
+    "min": 0,
+    "max": 100,
+    "round": 2,
+    "formula": "score = 100 * Σ(weight_i × factor_score_i)"
+  },
+  "normalization": {
+    "method": "absolute_bands",
+    "_method_note": "absolute_bands=按每个因子的 bands 分段映射（逐行独立打分，纯文本 AI 可手算复现，推荐）；minmax=当日横截面归一化（需要完整样本）",
+    "band_rule": "区间为 min <= x < max；min=null 表示负无穷，max=null 表示正无穷",
+    "clip": [0.0, 1.0]
+  },
+  "hard_filters": [
+    {
+      "key": "price",
+      "op": "between",
+      "value": [100, 150],
+      "label": "价格区间 100-150 元（T+0 活跃且债底保护）"
+    },
+    {
+      "key": "stock_change_pct",
+      "op": ">=",
+      "value": 3.0,
+      "label": "正股动量 > 3%（有驱动才有日内弹性）"
+    },
+    {
+      "key": "volume_ratio",
+      "op": ">=",
+      "value": 1.5,
+      "label": "量比 > 1.5（有资金参与）"
+    }
+  ],
+  "factors": [
+    {
+      "key": "price_position",
+      "column": "price",
+      "name": "价格位置",
+      "weight": 0.15,
+      "direction": "lower_better",
+      "rationale": "中低价转债债底更厚、日内波动可控；过高价格回撤风险大",
+      "bands": [
+        [null, 110, 1.0],
+        [110, 125, 0.85],
+        [125, 140, 0.6],
+        [140, 150, 0.35],
+        [150, null, 0.0]
+      ]
+    },
+    {
+      "key": "stock_momentum",
+      "column": "stock_change_pct",
+      "name": "正股动量",
+      "weight": 0.25,
+      "direction": "higher_better",
+      "rationale": "正股是转债日内弹性的第一驱动，动量越强补涨确定性越高",
+      "bands": [
+        [null, 0, 0.0],
+        [0, 3, 0.3],
+        [3, 5, 0.7],
+        [5, 8, 0.9],
+        [8, null, 1.0]
+      ]
+    },
+    {
+      "key": "cb_stock_gap",
+      "column": "cb_stock_gap",
+      "name": "债股涨幅缺口",
+      "weight": 0.25,
+      "direction": "higher_better",
+      "rationale": "正股大涨而转债未跟上 = 存在补涨空间，是本策略最核心的 Alpha 来源",
+      "bands": [
+        [null, 0, 0.0],
+        [0, 1, 0.35],
+        [1, 2, 0.6],
+        [2, 4, 0.85],
+        [4, null, 1.0]
+      ]
+    },
+    {
+      "key": "volume_ratio",
+      "column": "volume_ratio",
+      "name": "量比",
+      "weight": 0.20,
+      "direction": "higher_better",
+      "rationale": "量比代表资金关注度，T+0 需要足够流动性才能进出",
+      "bands": [
+        [null, 1.0, 0.0],
+        [1.0, 1.5, 0.3],
+        [1.5, 2.0, 0.6],
+        [2.0, 3.0, 0.85],
+        [3.0, null, 1.0]
+      ]
+    },
+    {
+      "key": "premium_rate",
+      "column": "premium_rate",
+      "name": "转股溢价率",
+      "weight": 0.15,
+      "direction": "lower_better",
+      "rationale": "低溢价转债跟随正股更紧密，高溢价容易股涨债不涨",
+      "bands": [
+        [null, 5, 1.0],
+        [5, 10, 0.85],
+        [10, 20, 0.6],
+        [20, 30, 0.35],
+        [30, null, 0.1]
+      ]
+    }
+  ],
+  "top_n": 3,
+  "_top_n_note": "只推送 Top3 候选信号，过滤冗余信息"
+}
